@@ -9,7 +9,10 @@ DNSRR = scapy.DNSRR
 raw = scapy.raw
 
 
-class dnsSpoofingHandler(AttackHandler):
+class DnsSpoofingHandler(AttackHandler):
+    def __init__(self):
+        super().__init__()
+
     def _force_dissect(self, pkt):
         return IP(raw(pkt))
 
@@ -53,7 +56,9 @@ class dnsSpoofingHandler(AttackHandler):
         return bool(rule1 and rule2 and rule3 and rule4)
 
     def handle(self, packet):
-        pass
+        ip = packet[IP]
+        src_ip = ip.src
+        self.db.add_address(src_ip)
 
 def build_legit_dns_response():
     return (
@@ -90,7 +95,7 @@ def build_fake_dns_response():
 
 
 if __name__ == "__main__":
-    handler = dnsSpoofingHandler()
+    handler = DnsSpoofingHandler()
     legit_pkt = build_legit_dns_response()
     fake_pkt = build_fake_dns_response()
 
