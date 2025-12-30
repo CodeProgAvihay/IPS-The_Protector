@@ -11,7 +11,7 @@ class PortScanningHandler(AttackHandler):
         self.scans = {}
 
     def detect(self, packet):
-        if not packet.haslayer(IP) or not packet.haslayer(TCP):
+        if not packet.haslayer(IP) and not packet.haslayer(TCP):
             return False
 
         ip = packet[IP]
