@@ -35,12 +35,14 @@ def process_packet(packet):
         #   packet.drop()
         #else:
         #   packet.accept()
-        if HANDLERS[0].db.does_address_exist(packet[IP].src):
-            packet.drop()
-            return
-        for attack in HANDLERS:
-            if attack.detect():
+        #if HANDLERS[0].db.does_address_exist(packet[IP].src):
+        #    packet.drop()
+        #    return
+        print(scapy_pck)
+        for pck in HANDLERS:
+            if pck.detect(scapy_pck):
                 packet.drop()
+                print("Dropped the attack.")
                 return
         packet.accept()
     except Exception as e:
