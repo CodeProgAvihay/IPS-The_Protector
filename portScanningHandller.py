@@ -41,7 +41,8 @@ class PortScanningHandler(AttackHandler):
         self.cleanup_old(src_ip, now)
 
         if len(entry["ports"]) >= self.port_checked:
-            self.handle(packet)
+            #self.handle(packet)
+            print("Attack detected. type:", scan_type)
             self.reset(src_ip)
             return True
         
@@ -74,4 +75,4 @@ class PortScanningHandler(AttackHandler):
     def handle(self, packet):
         ip = packet[IP]
         src_ip = ip.src
-        self.db.add_address(src_ip)
+        self.db.add_address(src_ip, "Port Scan")
