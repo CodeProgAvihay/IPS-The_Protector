@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from sqlDataBase import SqliteDatabase
 
 class AttackHandler(ABC):
-    def __init__(self):
-        self.db = SqliteDatabase()
+    def __init__(self, _db: SqliteDatabase):
+        self.db = _db
 
     @abstractmethod
     def detect(self, packet):

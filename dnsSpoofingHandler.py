@@ -1,5 +1,6 @@
 import scapy.all as scapy
 from attackHandler import AttackHandler
+from sqlDataBase import SqliteDatabase
 
 IP = scapy.IP
 UDP = scapy.UDP
@@ -10,8 +11,8 @@ raw = scapy.raw
 
 
 class DnsSpoofingHandler(AttackHandler):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, db: SqliteDatabase):
+        super().__init__(db)
 
     def _force_dissect(self, pkt):
         return IP(raw(pkt))

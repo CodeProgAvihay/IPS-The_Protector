@@ -11,6 +11,7 @@ class PortScanningHandler(AttackHandler):
         self.scans = {}
 
     def detect(self, packet):
+        print("Trying to analyze the packet.")
         if not packet.haslayer(IP) and not packet.haslayer(TCP):
             return False
 
@@ -41,7 +42,7 @@ class PortScanningHandler(AttackHandler):
         self.cleanup_old(src_ip, now)
 
         if len(entry["ports"]) >= self.port_checked:
-            #self.handle(packet)
+            self.handle(packet)
             print("Attack detected. type:", scan_type)
             self.reset(src_ip)
             return True

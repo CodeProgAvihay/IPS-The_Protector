@@ -7,10 +7,11 @@ from portScanningHandller import PortScanningHandler
 from dnsSpoofingHandler import DnsSpoofingHandler
 from sqlDataBase import  SqliteDatabase
 
+DB = SqliteDatabase()
 
 HANDLERS = [
-    PortScanningHandler(),
-    DnsSpoofingHandler()
+    PortScanningHandler(DB),
+    DnsSpoofingHandler(DB)
 ]
 
 
@@ -30,21 +31,18 @@ def cleanup_and_exit(nfqueue, signum=None, frame=None):
 def process_packet(packet):
     try:
         scapy_pck = Ether(packet.get_payload())
-        #here we connect it to the checking system.
-        #if is_attack:
-        #   packet.drop()
-        #else:
-        #   packet.accept()
-        #if HANDLERS[0].db.does_address_exist(packet[IP].src):
-        #    packet.drop()
-        #    return
-        print(scapy_pck)
-        for pck in HANDLERS:
-            if pck.detect(scapy_pck):
+        if DB.does_address_exist(packet[IP].src):
+            packet.drop()
+            print("Dropped the attack.")
+            return
+        #print(scapy_pck)
+        for handler in HANDLERS:
+            if handler.detect(scapy_pck):
                 packet.drop()
                 print("Dropped the attack.")
                 return
         packet.accept()
+        print("packet got accepted")
     except Exception as e:
         print("Error analyze the packet.")
         packet.accpet()
