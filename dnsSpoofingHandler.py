@@ -59,7 +59,7 @@ class DnsSpoofingHandler(AttackHandler):
     def handle(self, packet):
         ip = packet[IP]
         src_ip = ip.src
-        self.db.add_address(src_ip)
+        self.db.add_attack(src_ip)
 
 def build_legit_dns_response():
     return (

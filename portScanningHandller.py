@@ -76,4 +76,4 @@ class PortScanningHandler(AttackHandler):
     def handle(self, packet):
         ip = packet[IP]
         src_ip = ip.src
-        self.db.add_address(src_ip, "Port Scan")
+        self.db.add_attack(src_ip, "port_scanning")
