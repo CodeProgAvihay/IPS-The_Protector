@@ -4,15 +4,15 @@ import time
 
 
 class PortScanningHandler(AttackHandler):
-    def __init__(self, time_window = 3, ports_checked = 10):
-        super().__init__()
+    def __init__(self, _db, time_window = 3, ports_checked = 10):
+        super().__init__(_db)
         self.time_window = time_window
         self.port_checked = ports_checked
         self.scans = {}
 
     def detect(self, packet):
         print("Trying to analyze the packet.")
-        if not packet.haslayer(IP) and not packet.haslayer(TCP):
+        if not packet.haslayer(IP) or not packet.haslayer(TCP):
             return False
 
         ip = packet[IP]

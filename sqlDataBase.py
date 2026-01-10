@@ -18,7 +18,7 @@ class SqliteDatabase:
         self.conn.commit()
 
     def add_address(self, ip: str, attack_type: str):
-        self.crsr.execute("INSERT INTO ADDRESSES (IP, TYPE) VALUES (?, ?)",
+        self.crsr.execute("INSERT OR IGNORE INTO ADDRESSES (IP, TYPE) VALUES (?, ?)",
                           (ip, attack_type))
         self.conn.commit()
 

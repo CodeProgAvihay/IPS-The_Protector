@@ -14,6 +14,7 @@ HANDLERS = [
     DnsSpoofingHandler(DB)
 ]
 
+blocked_ip = set()
 
 def require_root():
     if os.geteuid() != 0:
@@ -30,22 +31,29 @@ def cleanup_and_exit(nfqueue, signum=None, frame=None):
 
 def process_packet(packet):
     try:
-        scapy_pck = Ether(packet.get_payload())
-        if DB.does_address_exist(packet[IP].src):
-            packet.drop()
-            print("Dropped the attack.")
+        scapy_pck = IP(packet.get_payload())
+        if not scapy_pck.haslayer(IP):
+            print("Don't have IP.")
+            packet.accept()
             return
-        #print(scapy_pck)
+        if scapy_pck[IP].src == "192.168.1.15":
+            print("[*] Packet of check.")
+        if scapy_pck[IP].src in blocked_ip:
+            packet.drop()
+            print("{&} Dropped the attack before checking.")
+            return
         for handler in HANDLERS:
             if handler.detect(scapy_pck):
                 packet.drop()
+                blocked_ip.add(scapy_pck[IP].src)
                 print("Dropped the attack.")
                 return
         packet.accept()
         print("packet got accepted")
     except Exception as e:
         print("Error analyze the packet.")
-        packet.accpet()
+        print("Error:", e)
+        packet.accept()
 
 def main():
     require_root()

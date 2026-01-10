@@ -2,7 +2,7 @@ from scapy.all import IP, TCP
 from scapy.all import *
 import time
 
-TARGET_IP = "192.168.56.101"   # ה-IP של ה-VM המוגן
+TARGET_IP = "192.168.1.176"   # ה-IP של ה-VM המוגן
 PORTS = range(20, 40)          # מספיק בשביל לעבור את ports_checked
 DELAY = 0.1                    # בתוך time_window שלך
 
