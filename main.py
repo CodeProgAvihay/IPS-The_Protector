@@ -5,12 +5,14 @@ from netfilterqueue import NetfilterQueue
 from scapy.all import Ether, IP
 from portScanningHandller import PortScanningHandler
 from dnsSpoofingHandler import DnsSpoofingHandler
+from SYNFloodHandler import SynFloodHandler
 from sqlDataBase import  SqliteDatabase
 
 DB = SqliteDatabase()
 
 HANDLERS = [
     PortScanningHandler(DB),
+    SynFloodHandler(DB),
     DnsSpoofingHandler(DB)
 ]
 
