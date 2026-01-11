@@ -14,8 +14,8 @@ def send_syn_burst():
     delay = 1.0 / RATE
 
     for i in range(COUNT):
-        sport = random.randint(1024, 65535)  # מקור אקראי כדי לדמות לקוחות שונים
-        pkt = IP(dst=TARGET_IP) / TCP(sport=sport, dport=TARGET_PORT, flags="S")
+        src_port = random.randint(1024, 65535)
+        pkt = IP(dst=TARGET_IP) / TCP(sport=src_port, dport=TARGET_PORT, flags="S")
         send(pkt, verbose=False)
         time.sleep(delay)
 

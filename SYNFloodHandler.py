@@ -5,7 +5,7 @@ from scapy.all import IP, TCP
 
 class SynFloodHandler(AttackHandler):
     def __init__(self, _db, time_window=5, syn_threshold=40, min_ratio=0.2):
-        super.__init__(_db)
+        super().__init__(_db)
         self.time_window = time_window
         self.syn_threshold = syn_threshold     # כמה SYN נחשב חריג
         self.min_ratio = min_ratio             # ACK/SYN מינימלי

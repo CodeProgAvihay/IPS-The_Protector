@@ -2,9 +2,9 @@ from scapy.all import IP, TCP
 from scapy.all import *
 import time
 
-TARGET_IP = "192.168.1.176"   # ה-IP של ה-VM המוגן
-PORTS = range(20, 40)          # מספיק בשביל לעבור את ports_checked
-DELAY = 0.1                    # בתוך time_window שלך
+TARGET_IP = "192.168.1.176"
+PORTS = range(20, 40)
+DELAY = 0.1
 
 def syn_scan():
     print("[*] SYN scan")
