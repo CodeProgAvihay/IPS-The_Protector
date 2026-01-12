@@ -34,10 +34,6 @@ def cleanup_and_exit(nfqueue, signum=None, frame=None):
 def process_packet(packet):
     try:
         scapy_pck = IP(packet.get_payload())
-        if not scapy_pck.haslayer(IP):
-            print("Don't have IP.")
-            packet.accept()
-            return
         if scapy_pck[IP].src == "192.168.1.15":
             print("[*] Packet of check.")
         if scapy_pck[IP].src in blocked_ip:

@@ -16,7 +16,8 @@ class SqliteDatabase:
     def _create_table(self):
         self.crsr.execute('''
         CREATE TABLE IF NOT EXISTS ATTACKS (
-        IP TEXT PRIMARY KEY,
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        IP TEXT NOT NULL,
         ATTACK_TYPE TEXT NOT NULL,
         TIME TEXT NOT NULL,
         DESCRIPTION TEXT NOT NULL
@@ -25,7 +26,7 @@ class SqliteDatabase:
         self.conn.commit()
 
     def add_attack(self, ip: str, attack_type: str):
-        self.crsr.execute("INSERT OR IGNORE INTO ATTACKS (IP, ATTACK_TYPE, TIME, DESCRIPTION) VALUES (?, ?, datetime('now'), ?)",
+        self.crsr.execute("INSERT INTO ATTACKS (IP, ATTACK_TYPE, TIME, DESCRIPTION) VALUES (?, ?, datetime('now'), ?)",
                           (ip, attack_type, ATTACK_DESCRIPTIONS[attack_type]))
         self.conn.commit()
 
