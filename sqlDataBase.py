@@ -25,7 +25,7 @@ class SqliteDatabase:
         self.conn.commit()
 
     def add_attack(self, ip: str, attack_type: str):
-        self.crsr.execute("INSERT INTO ATTACKS (IP, ATTACK_TYPE, TIME, DESCRIPTION) VALUES (?, ?, datetime('now'), ?)",
+        self.crsr.execute("INSERT OR IGNORE INTO ATTACKS (IP, ATTACK_TYPE, TIME, DESCRIPTION) VALUES (?, ?, datetime('now'), ?)",
                           (ip, attack_type, ATTACK_DESCRIPTIONS[attack_type]))
         self.conn.commit()
 
