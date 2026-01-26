@@ -1,75 +1,36 @@
 import signal
-import sys
 import os
-from netfilterqueue import NetfilterQueue
-from scapy.all import Ether, IP
-from portScanningHandller import PortScanningHandler
-from dnsSpoofingHandler import DnsSpoofingHandler
-from SYNFloodHandler import SynFloodHandler
-from sqlDataBase import  SqliteDatabase
-
-DB = SqliteDatabase()
-
-HANDLERS = [
-    PortScanningHandler(DB),
-    SynFloodHandler(DB),
-    DnsSpoofingHandler(DB)
-]
-
-blocked_ip = set()
+import sys
+import time
+import threading
+import IP_IPS
+import system_status
 
 def require_root():
     if os.geteuid() != 0:
         print("[X] You must run the program with root permissions(sudo).")
         sys.exit(1)
 
-def cleanup_and_exit(nfqueue, signum=None, frame=None):
-    try:
-        nfqueue.unbind()
-    except Exception as e:
-        pass
-    os.system("iptables -F")
-    sys.exit(0)
-
-def process_packet(packet):
-    try:
-        scapy_pck = IP(packet.get_payload())
-        if scapy_pck[IP].src == "192.168.1.15":
-            print("[*] Packet of check.")
-        if scapy_pck[IP].src in blocked_ip:
-            packet.drop()
-            print("{&} Dropped the attack before checking.")
-            return
-        for handler in HANDLERS:
-            if handler.detect(scapy_pck):
-                packet.drop()
-                blocked_ip.add(scapy_pck[IP].src)
-                print("Dropped the attack.")
-                return
-        packet.accept()
-        print("packet got accepted")
-    except Exception as e:
-        print("Error analyze the packet.")
-        print("Error:", e)
-        packet.accept()
+def shutdown(thread, sig=None, frame=None):
+    system_status.running = False
+    thread.join()
 
 def main():
     require_root()
-    os.system("iptables -I INPUT -j NFQUEUE --queue-num 1")
-    nfqueue = NetfilterQueue()
+    th = threading.Thread(target=IP_IPS.main)
+    th.start()
 
     #checking when the program closed:
-    signal.signal(signal.SIGINT, lambda s, f: cleanup_and_exit(nfqueue, s, f)) #by Ctrl + C
-    signal.signal(signal.SIGTERM, lambda s, f: cleanup_and_exit(nfqueue, s, f)) #by killing the terminal.
-    signal.signal(signal.SIGHUP, lambda s, f: cleanup_and_exit(nfqueue, s, f)) #by disconnecting from the terminal.
+    #signal.signal(signal.SIGINT, lambda s, f: shutdown(th, s, f))   #by Ctrl + C.
+    #signal.signal(signal.SIGTERM, lambda s, f: shutdown(th, s, f))   #by killing the terminal.
 
-    nfqueue.bind(1, process_packet)
-    print("Starting listennig to packets...")
+    print("The system start running!!!\n\n")
     try:
-        nfqueue.run()
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
-       cleanup_and_exit(nfqueue)
-
+        system_status.running = False
+        th.join()
 
 if __name__ == "__main__":
     main()
