@@ -16,7 +16,8 @@ class SqliteDatabase:
     def _create_table(self):
         self.crsr.execute('''
         CREATE TABLE IF NOT EXISTS ATTACKS (
-        IP TEXT PRIMARY KEY,
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        IP TEXT NOT NULL,
         ATTACK_TYPE TEXT NOT NULL,
         TIME TEXT NOT NULL,
         DESCRIPTION TEXT NOT NULL
