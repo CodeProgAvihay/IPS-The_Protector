@@ -6,11 +6,11 @@ class AttackHandler(ABC):
         self.db = _db
 
     @abstractmethod
-    def detect(self, packet):
+    def detect(self, packet, email):
         """Analyze the packet and return True if it's suspicious."""
         pass
 
     @abstractmethod
-    def handle(self, packet):
+    def handle(self, packet, email):
         """What to do when an attack is detected."""
         pass

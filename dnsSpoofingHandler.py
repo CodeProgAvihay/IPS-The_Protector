@@ -1,6 +1,7 @@
 import scapy.all as scapy
 from attackHandler import AttackHandler
 from sqlDataBase import SqliteDatabase
+from alert_manager import alert_queue
 
 IP = scapy.IP
 UDP = scapy.UDP
@@ -26,7 +27,7 @@ class DnsSpoofingHandler(AttackHandler):
                 answers.append(rr)
         return answers
 
-    def detect(self, pkt) -> bool:
+    def detect(self, pkt, email) -> bool:
         if not pkt.haslayer(DNS):
             return False
 
@@ -52,15 +53,17 @@ class DnsSpoofingHandler(AttackHandler):
         nscount = int(dns.nscount or 0)
         arcount = int(dns.arcount or 0)
         rule4 = (nscount == 0) and (arcount == 0)
+        
+        if rule1 and rule2 and rule3 and rule4:
+            self.handle(pkt, email)
+            print("Attack detected. type: Dns Spoofing.")
+            return True
+        return False
+        #return bool(rule1 and rule2 and rule3 and rule4)
 
-
-        return bool(rule1 and rule2 and rule3 and rule4)
-
-    def handle(self, packet):
+    def handle(self, packet, email):
         ip = packet[IP]
         src_ip = ip.src
-        self.db.add_attack(src_ip)
-
-
-
-
+        self.db.add_attack(src_ip, "dns_spoofing")
+        #sendEmail.send_mail_to_user(email, src_ip, "DNS Spoofing", server)
+        alert_queue.put((email, src_ip, "DNS Spoofing"))

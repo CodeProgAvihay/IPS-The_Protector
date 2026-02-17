@@ -1,5 +1,6 @@
 from attackHandler import AttackHandler
 from scapy.all import IP, TCP
+from alert_manager import alert_queue
 import time
 
 
@@ -10,7 +11,7 @@ class PortScanningHandler(AttackHandler):
         self.port_checked = ports_checked
         self.scans = {}
 
-    def detect(self, packet):
+    def detect(self, packet, email):
         print("Trying to analyze the packet.")
         if not packet.haslayer(IP) or not packet.haslayer(TCP):
             return False
@@ -42,7 +43,7 @@ class PortScanningHandler(AttackHandler):
         self.cleanup_old(src_ip, now)
 
         if len(entry["ports"]) >= self.port_checked:
-            self.handle(packet)
+            self.handle(packet, email)
             print("Attack detected. type:", scan_type)
             self.reset(src_ip)
             return True
@@ -73,7 +74,8 @@ class PortScanningHandler(AttackHandler):
     def reset(self, src_ip):
         del self.scans[src_ip]
 
-    def handle(self, packet):
+    def handle(self, packet, email):
         ip = packet[IP]
         src_ip = ip.src
         self.db.add_attack(src_ip, "port_scanning")
+        alert_queue.put((email, src_ip, "Port Scan"))

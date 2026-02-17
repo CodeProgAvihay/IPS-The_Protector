@@ -1,6 +1,7 @@
 import time
 from attackHandler import AttackHandler
 import scapy.all as scapy
+from alert_manager import alert_queue
 
 IP = scapy.IP
 TCP = scapy.TCP
@@ -13,7 +14,7 @@ class SynFloodHandler(AttackHandler):
         self.min_ratio = min_ratio  # ACK/SYN מינימלי
         self.stats = {}
 
-    def detect(self, packet):
+    def detect(self, packet, email):
         if not packet.haslayer(IP) or not packet.haslayer(TCP):
             return False
 
@@ -50,12 +51,14 @@ class SynFloodHandler(AttackHandler):
         ratio = entry["ack"] / entry["syn"]
 
         if ratio < self.min_ratio:
-            self.handle(packet)
+            self.handle(packet, email)
             print("Attack detected. type: SYN Flood.")
             del self.stats[src]
             return True
 
         return False
 
-    def handle(self, packet):
+    def handle(self, packet, email):
         self.db.add_attack(packet[IP].src, "syn_flood")
+        #sendEmail.send_mail_to_user(email, packet[IP].src, "SYN Flood", server)
+        alert_queue.put((email, packet[IP].src, "SYN Flood"))

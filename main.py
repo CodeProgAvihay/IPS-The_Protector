@@ -1,4 +1,5 @@
 import signal
+import re
 import os
 import sys
 import time
@@ -15,9 +16,20 @@ def shutdown(thread, sig=None, frame=None):
     system_status.running = False
     thread.join()
 
+def is_valid_email(email: str) -> bool:
+    pattern = r'^(?!\.)[A-Za-z0-9._%+-]+(?<!\.)@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    return re.match(pattern, email) is not None
+
 def main():
     require_root()
-    th = threading.Thread(target=IP_IPS.main)
+
+    print("Welcome to The Protector!!")
+    email = input("\nBefore we start, please give us your email, so we could infrom you: ")
+    while not is_valid_email(email):
+        print("You entered something that is not an email!!")
+        email = input("Please try again: ")
+    
+    th = threading.Thread(target=IP_IPS.main, args=(email,))
     th.start()
 
     #checking when the program closed:
