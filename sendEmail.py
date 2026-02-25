@@ -8,12 +8,12 @@ def mail_worker(server):
     while True:
         data = alert_queue.get()
         if data is None:
-            print("[MAIL] shutdown signal received")
+            #print("[MAIL] shutdown signal received")
             break
         email, ip, attack_type = data
         send_mail_to_user(email, ip, attack_type, server)
         alert_queue.task_done()
-    print("[MAIL] thread exited")
+    #print("[MAIL] thread exited")
 
 def send_mail_to_user(email, ip, type, server):
     subject = "[IPS] Attack prevented successfully."

@@ -42,16 +42,16 @@ def clousre_to_process(HANDLERS, email):
             scapy_pck = IP(packet.get_payload())
             if scapy_pck[IP].src in blocked_ip:
                 packet.drop()
-                print("{&} Dropped the attack before checking.")
+                #print("{&} Dropped the attack before checking.")
                 return
             for handler in HANDLERS:
                 if handler.detect(scapy_pck, email):
                     packet.drop()
                     blocked_ip.add(scapy_pck[IP].src)
-                    print("Dropped the attack.")
+                    #print("Dropped the attack.")
                     return
             packet.accept()
-            print("packet got accepted")
+            #print("packet got accepted")
         except Exception as e:
             print("Error analyze the packet.")
             print("Error:", e)
@@ -87,7 +87,7 @@ def main(email):
             nfqueue.run(block=False)
             time.sleep(0.05)
     finally:
-        print("[*] Stopping IPS...")
+        #print("[*] Stopping IPS...")
         alert_queue.put(None)
         mail_thread.join()
         cleanup_and_exit(nfqueue)

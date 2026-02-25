@@ -1,7 +1,7 @@
 import time
 from attackHandler import AttackHandler
 import scapy.all as scapy
-from alert_manager import alert_queue
+from alert_manager import alert_queue, event_queue
 
 IP = scapy.IP
 TCP = scapy.TCP
@@ -62,3 +62,10 @@ class SynFloodHandler(AttackHandler):
         self.db.add_attack(packet[IP].src, "syn_flood")
         #sendEmail.send_mail_to_user(email, packet[IP].src, "SYN Flood", server)
         alert_queue.put((email, packet[IP].src, "SYN Flood"))
+        event_queue.put({
+            "type": "alert",
+            "time": time.strftime("%H:%M:%S"),
+            "attack": "SYN flood",
+            "ip": packet[IP].src,
+            "severity": "HIGH"
+        })

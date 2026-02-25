@@ -6,6 +6,8 @@ import time
 import threading
 import IP_IPS
 import system_status
+import UI_CLI
+from alert_manager import event_queue
 
 def require_root():
     if os.geteuid() != 0:
@@ -29,6 +31,8 @@ def main():
         print("You entered something that is not an email!!")
         email = input("Please try again: ")
     
+    ui = threading.Thread(target=UI_CLI.run_ui, args=(event_queue,))
+    ui.start()
     th = threading.Thread(target=IP_IPS.main, args=(email,))
     th.start()
 
@@ -43,6 +47,7 @@ def main():
     except KeyboardInterrupt:
         system_status.running = False
         th.join()
+        ui.join()
 
 if __name__ == "__main__":
     main()

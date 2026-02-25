@@ -1,7 +1,8 @@
+import time
 import scapy.all as scapy
 from attackHandler import AttackHandler
 from sqlDataBase import SqliteDatabase
-from alert_manager import alert_queue
+from alert_manager import alert_queue, event_queue
 
 IP = scapy.IP
 UDP = scapy.UDP
@@ -67,3 +68,10 @@ class DnsSpoofingHandler(AttackHandler):
         self.db.add_attack(src_ip, "dns_spoofing")
         #sendEmail.send_mail_to_user(email, src_ip, "DNS Spoofing", server)
         alert_queue.put((email, src_ip, "DNS Spoofing"))
+        event_queue.put({
+            "type": "alert",
+            "time": time.strftime("%H:%M:%S"),
+            "attack": "Dns Spoofing",
+            "ip": src_ip,
+            "severity": "HIGH"
+        })
