@@ -1,6 +1,7 @@
 import time
 from attackHandler import AttackHandler
 import scapy.all as scapy
+import pop_up_alert
 from alert_manager import alert_queue, event_queue
 
 IP = scapy.IP
@@ -69,3 +70,4 @@ class SynFloodHandler(AttackHandler):
             "ip": packet[IP].src,
             "severity": "HIGH"
         })
+        pop_up_alert.popup_alert(f"ATTACK DETECTED!!!\n\nIP: {packet[IP].src}\n\nType: SYN Flood.")

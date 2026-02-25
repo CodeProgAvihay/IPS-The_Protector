@@ -1,6 +1,7 @@
 from attackHandler import AttackHandler
 from scapy.all import IP, TCP
 from alert_manager import alert_queue, event_queue
+import pop_up_alert
 import time
 
 
@@ -85,3 +86,4 @@ class PortScanningHandler(AttackHandler):
             "ip": src_ip,
             "severity": "HIGH"
         })
+        pop_up_alert.popup_alert(f"ATTACK DETECTED!!!\n\nIP: {src_ip}\n\nType: Port Scanning.")

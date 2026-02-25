@@ -1,5 +1,6 @@
 import time
 import scapy.all as scapy
+import pop_up_alert
 from attackHandler import AttackHandler
 from sqlDataBase import SqliteDatabase
 from alert_manager import alert_queue, event_queue
@@ -75,3 +76,4 @@ class DnsSpoofingHandler(AttackHandler):
             "ip": src_ip,
             "severity": "HIGH"
         })
+        pop_up_alert.popup_alert(f"ATTACK DETECTED!!!\n\nIP: {packet[IP].src}\n\nType: DNS Spoofing.")
