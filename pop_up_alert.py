@@ -5,13 +5,13 @@ def popup_alert(text):
     def show():
         root = tk.Tk()
         root.title("IPS ALERT")
-        width = 600
-        height = 300
+        width = 700
+        height = 400
         label = tk.Label(
             root,
             text=text,
             fg="red",
-            font=("Arial", 16, "bold"),
+            font=("Arial", 24, "bold"),
             wraplength=260,
             justify="center"
         )
