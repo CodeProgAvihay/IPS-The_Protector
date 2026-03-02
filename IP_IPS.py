@@ -7,6 +7,7 @@ import threading
 from netfilterqueue import NetfilterQueue
 import scapy.all as scapy
 from portScanningHandller import PortScanningHandler
+from DNSTunnelingHandler import DNSTunnelHandler
 from dnsSpoofingHandler import DnsSpoofingHandler
 from SYNFloodHandler import SynFloodHandler
 from sqlDataBase import SqliteDatabase
@@ -73,7 +74,8 @@ def main(email):
     HANDLERS = [
     PortScanningHandler(DB),
     SynFloodHandler(DB),
-    DnsSpoofingHandler(DB)
+    DnsSpoofingHandler(DB),
+    DNSTunnelHandler(DB)
     ]
     # checking when the program closed:
     # signal.signal(signal.SIGINT, lambda s, f: cleanup_and_exit(nfqueue, s, f)) #by Ctrl + C

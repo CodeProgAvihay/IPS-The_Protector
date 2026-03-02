@@ -4,7 +4,8 @@ ATTACK_DESCRIPTIONS = {
     "syn_flood": "SYN Flood attack detected: high rate of SYN packets from the same source IP",
     "port_scanning": "Port Scanning detected: multiple ports probed from the same source IP in a short time window",
     "arp_spoofing": "ARP Spoofing detected: IP address associated with multiple MAC addresses",
-    "dns_spoofing": "DNS Spoofing attack detected: forged DNS response does not match expected structure"
+    "dns_spoofing": "DNS Spoofing attack detected: forged DNS response does not match expected structure",
+    "dns_tunneling": "DNS Tunneling attack detected: anomalous DNS queries indicate possible covert data exfiltration channel"
 }
 class SqliteDatabase:
     def __init__(self, db_name: str = "ProtectorDB.db"):
